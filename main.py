@@ -1,5 +1,5 @@
 from Planner import bfs_planner
-from controller import run_with_recomposition
+from controller import run_with_recomposition, run_with_repair
 from executor import execute_plan
 from travel_domain import build_travel_domain, TripRequest, UserProfile, PaymentInfo, Itinerary
 
@@ -14,6 +14,7 @@ def main():
     initial_state = {TripRequest, UserProfile, PaymentInfo}
     goal_type = Itinerary
     final_data = run_with_recomposition(initial_data, initial_state, domain, goal_type)
+    # repair = run_with_repair(domain, initial_data, initial_state, goal_type)
 
 
 if __name__ == "__main__":
