@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Set, List, Dict, Callable
+from typing import Set, List, Dict, Callable, Optional, Any
 
 
 @dataclass(frozen=True)
@@ -12,7 +12,7 @@ class Action:
     name: str
     preconditions: Set[DataType]
     effects: Set[DataType]
-    impl: Callable | None = None
+    impl: Optional[Callable[[Dict[DataType, Any]], Dict[DataType, Any]]] = None
 
 @dataclass
 class Domain:

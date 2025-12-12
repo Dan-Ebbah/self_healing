@@ -1,5 +1,11 @@
 from domain import DataType, Action, Domain
 
+FAIL_BOOK_A = True
+
+class ToolFailure(Exception):
+    pass
+
+
 TripRequest = DataType("TripRequest")
 UserProfile = DataType("UserProfile")
 FlightSearchParams = DataType("FlightSearchParams")
@@ -16,12 +22,31 @@ Itinerary = DataType("Itinerary")
 WeatherSearchParams = DataType("WeatherSearchParams")
 WeatherReport = DataType("WeatherReport")
 
+def impl_search_flights_A(state_data):
+    if FAIL_BOOK_A:
+        raise ToolFailure("Flight search A failed")
+    
+    return {FlightOptions: {"flights": ["F1", "F2"]}}
+
+def impl_book_flights_A(state_data):
+    return {FlightBooking: {"booking_id": "FLIGHT123"}}
+
+def impl_search_hotels(state_data):
+    return {HotelOptions: {"hotels": ["H1", "H2"]}}
+
+def impl_book_hotel(state_data):
+    return {HotelBooking: {"booking_id": "HOTEL456"}}
+
+def impl_make_itinerary(state_data):
+    return {Itinerary: {"summary": "Trip confirmed!"}}
+
+
 def build_travel_domain() -> Domain:
     search_flights_A = Action(
         name="search_flights_A",
         preconditions={FlightSearchParams},
         effects={FlightOptions},
-        impl=None,
+        impl=impl_search_flights_A,
     )
 
     search_flights_B = Action(
@@ -35,7 +60,7 @@ def build_travel_domain() -> Domain:
         name="book_flights_A",
         preconditions={SelectedFlight, PaymentInfo},
         effects={FlightBooking},
-        impl=None,
+        impl=impl_book_flights_A,
     )
     book_flights_B = Action(
         name="book_flights_B",
@@ -47,13 +72,13 @@ def build_travel_domain() -> Domain:
         name="search_hotels",
         preconditions={HotelSearchParams},
         effects={HotelOptions},
-        impl=None,
+        impl=impl_search_hotels,
     )
     book_hotel = Action(
         name="book_hotel",
         preconditions={SelectedHotel, PaymentInfo},
         effects={HotelBooking},
-        impl=None,
+        impl=impl_book_hotel,
     )
     charge_v1 = Action(
         name="charge_v1",
@@ -66,7 +91,7 @@ def build_travel_domain() -> Domain:
         name="make_itinerary",
         preconditions={FlightBooking, HotelBooking, TripRequest},
         effects={Itinerary},
-        impl=None,
+        impl=impl_make_itinerary,
     )
 
     get_weather_location = Action(
